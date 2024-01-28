@@ -1,8 +1,8 @@
 # Ignore specific files
 .env
 
-# Ignore files in a specific directory
-nodemodules/
+# Ignore node modules directory
+node_modules
 
 # Ignore files with a specific extension
 *.log
