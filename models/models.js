@@ -33,59 +33,91 @@ const User = sequelize.define('User', {
 });
 
 
-const Habit = sequelize.define('Habit', {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-    allowNull: false
+const Habit = sequelize.define(
+  "Habit",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      allowNull: false,
+    },
+    habit_name: {
+      type: DataTypes.STRING(40),
+      allowNull: false,
+      unique: true,
+    },
+    habit_description: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+    difficulty_rating: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
+    impact_rating: {
+      type: DataTypes.DOUBLE,
+      allowNull: true,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
+    habit_picture_url: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
   },
-  habit_name: {
-    type: DataTypes.STRING(40),
-    allowNull: false,
-    unique: true
-  },
-  habit_description: {
-    type: DataTypes.STRING(255),
-    allowNull: false
-  },
-  difficulty_rating: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-    validate: {
-      min: 1,
-      max: 5
-    }
-  },
-  impact_rating: {
-    type: DataTypes.DOUBLE,
-    allowNull: true,
-    validate: {
-      min: 1,
-      max: 5
-    }
-  },
-  habit_picture_url: {
-    type: DataTypes.STRING(255),
-    allowNull: true
+  {
+    tableName: "habits",
+    timestamps: false,
   }
-});
+);
 
-const Progress = sequelize.define('Progress', {
-  user_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true
-  },
-  habit_id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true
-  },
-  done: {
+const UsersHabits = sequelize.define('UserHabits', {
+  progress: {
     type: DataTypes.BOOLEAN,
     allowNull: false
   }
+}, {
+  tableName: 'users_habits',
+  timestamps: false
 });
 
-module.exports = {User, Habit, Progress, sequelize};
+User.belongsToMany(Habit, { through: UsersHabits, foreignKey: 'user_id' });
+Habit.belongsToMany(User, { through: UsersHabits, foreignKey: 'habit_id' });
+
+const Comment = sequelize.define("Comment", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  user_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "users",
+      key: "id",
+    },
+  },
+  habit_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: "habits",
+      key: "id",
+    }
+  },
+  content: {
+    type: DataTypes.TEXT
+  }
+},
+{
+  timestamps: true // Automatically adds createdAt and updatedAt columns
+});
+
+module.exports = {User, Habit, UsersHabits, sequelize};

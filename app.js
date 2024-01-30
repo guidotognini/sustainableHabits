@@ -11,8 +11,9 @@ app.use(express.json()); // Middleware to parse incoming request bodies in JSON 
 app.use(cookieParser()); // Middleware to parse cookies from incoming requests
 
 // Setting up routes
-app.use('/api/habits', require('./routes/habitRoutes')); // Mounting habit routes
-app.use('/api/users', require('./routes/userRoutes')); // Mounting user routes
+app.get('/', (req, res) => res.send('Welcome to a more sustainable lifestyle!'))
+app.use('/habits', require('./routes/habitRoutes')); // Mounting habit routes
+app.use('/users', require('./routes/userRoutes')); // Mounting user routes
 
 // Error handling middleware
 app.use(errorHandler); // Applying custom error handling middleware

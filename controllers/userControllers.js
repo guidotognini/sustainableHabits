@@ -1,6 +1,6 @@
 // Importing necessary modules and functions
 const asyncHandler = require('express-async-handler'); // Importing a utility middleware for handling asynchronous errors
-const { User } = require("../models/models.js"); // Importing the User model
+const { User, UsersHabits } = require("../models/models.js"); // Importing the User model
 const { Op } = require("sequelize"); // Importing Sequelize operators
 const validator = require('validator'); // Importing a validation library
 const { createTokens, validateToken } = require('../JWT.js'); // Importing functions for JWT token creation and validation
@@ -26,12 +26,15 @@ const register = asyncHandler(async (req, res) => {
   // Hashing the password before storing it in the database
   const hash = await bcrypt.hash(password, saltRounds);
   // Creating a new user record in the database
-  await User.create({ username, email, password: hash });
+  const user = await User.create({ username, email, password: hash });
+/*   for (let i = 1; i <= 10; i++) {
+    await UsersHabits.create({ user_id: user.id, habit_id: i });
+  } */
   res.status(201).send(`User with the email ${email} registered successfully!`);
 });
 
 // Controller function for user login
-const login = asyncHandler(async (req, res) => {
+const login =asyncHandler(async (req, res) => {
   const { username, password } = req.body; // Extracting username and password from request body
   // Finding user by username in the database
   const user = await User.findOne({ where: { username: username } });

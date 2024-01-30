@@ -21,7 +21,6 @@ const validateToken = asyncHandler(async (req, res, next) => {
   if (validToken) { // If token is valid
     const payload = validToken;
     req.userId = payload.id // Storing user ID extracted from token in request object
-    console.log(req.userId)
     req.authenticated = true; // Flag indicating user is authenticated
     return next(); // Proceed to the next middleware
   }
