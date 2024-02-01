@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser'); // Importing cookie-parser middle
 const app = express(); // Creating an Express application instance
 require("dotenv").config(); // Loading environment variables from a .env file
 const port = process.env.PORT || 3000; // Setting the port for the server to listen on
-const errorHandler = require('./middleware/errorHandler.js'); // Importing custom error handling middleware
+const errorHandler = require('./middleware/errorHandler'); // Importing custom error handling middleware
 
 // Setting up middleware
 app.use(express.json()); // Middleware to parse incoming request bodies in JSON format

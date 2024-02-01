@@ -5,6 +5,7 @@ const { Op } = require("sequelize"); // Importing Sequelize operators
 const validator = require('validator'); // Importing a validation library
 const { createTokens, validateToken } = require('../JWT.js'); // Importing functions for JWT token creation and validation
 const bcrypt = require("bcrypt"); // Importing the bcrypt library for password hashing
+const cookieParser = require('cookie-parser');
 
 // Number of salt rounds for password hashing
 const saltRounds = 10;
@@ -61,10 +62,35 @@ const login =asyncHandler(async (req, res) => {
   }
 });
 
+const logout = (req, res) => {
+  res.clearCookie('access-token')
+  res.send('Logout successful');
+};
+
 // Controller function to retrieve information about the current user
-const currentUser = asyncHandler(async(req, res) => {
-  res.status(200).json({"userId": req.userId});
+const profile = asyncHandler(async(req, res) => {
+  user = await User.findOne({where: {id: req.userId}});
+  res.status(200).json({"userId": req.userId, "username": user.username, "email": user.email});
 });
 
+const updateProfile = async(req,res)=>{
+  const {username, email} = req.body;
+  const user = await User.findByPk(req.userId);
+  const existingUser = await User.findOne({
+    where: { [Op.or]: [{ username: username }, { email: email }] },
+  });
+  if (existingUser) {
+    return res.status(400).json({ message: "Username or email already in use" });
+  }
+  if(username) {
+    user.username = username;
+  }
+  if(email) {
+    user.email = email;
+  }
+  await user.save({fields: ['username', 'email']});
+  res.status(200).json({"message": "User updated successfully", "User info": {"username": user.username, "email": user.email}})
+}
+
 // Exporting controller functions for use in other parts of the application
-module.exports = { register, login, currentUser };
+module.exports = { register, login, logout, profile, updateProfile};
