@@ -78,9 +78,9 @@ const Habit = sequelize.define(
   }
 );
 
-const UsersHabits = sequelize.define('UserHabits', {
+/* const UsersHabits = sequelize.define('UserHabits', {
   progress: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.FLOAT,
     allowNull: false
   }
 }, {
@@ -89,7 +89,81 @@ const UsersHabits = sequelize.define('UserHabits', {
 });
 
 User.belongsToMany(Habit, { through: UsersHabits, foreignKey: 'user_id' });
-Habit.belongsToMany(User, { through: UsersHabits, foreignKey: 'habit_id' });
+Habit.belongsToMany(User, { through: UsersHabits, foreignKey: 'habit_id' }); */
+
+const Milestone = sequelize.define('Milestone', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  habit_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Habit',
+      key: 'id'
+    }
+  },
+  description: {
+    type: DataTypes.TEXT
+  }
+}, {
+  tableName: 'milestones',
+  timestamps: false
+});
+
+Milestone.belongsTo(Habit, { foreignKey: 'habit_id' }); 
+Habit.hasMany(Milestone, { foreignKey: 'habit_id' });
+
+const Progress = sequelize.define('Progress', {
+  user_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+  },
+  habit_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+  },
+  milestone_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true,
+  },
+  completed: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    defaultValue: DataTypes.NOW,
+  },
+}, {
+  tableName: 'progress',
+  timestamps: true,
+  updatedAt: 'updated_at',
+  createdAt: 'created_at',
+});
+
+User.belongsToMany(Habit, { through: Progress , foreignKey: 'user_id' });
+Habit.belongsToMany(User, { through: Progress , foreignKey: 'habit_id'});
+User.hasMany(Progress, {foreignKey: 'user_id'});
+Progress.belongsTo(User, {foreignKey: 'user_id'});
+Habit.hasMany(Progress, {foreignKey: 'habit_id'});
+Progress.belongsTo(Habit, {foreignKey: 'habit_id'});
+
+Habit.hasMany(Milestone, {foreignKey: 'habit_id'});
+Milestone.belongsTo(Habit, {foreignKey: 'habit_id'});
+Progress.belongsTo(Milestone, { foreignKey: 'milestone_id' });
+Milestone.hasMany(Progress, { foreignKey: 'milestone_id' });
 
 const Comment = sequelize.define("Comment", {
   id: {
@@ -117,7 +191,10 @@ const Comment = sequelize.define("Comment", {
   }
 },
 {
-  timestamps: true // Automatically adds createdAt and updatedAt columns
+  tablename: 'comments',
+  timestamps: true,
+  updatedAt: 'updated_at',
+  createdAt: 'created_at' // Automatically adds createdAt and updatedAt columns
 });
 
-module.exports = {User, Habit, UsersHabits, sequelize};
+module.exports = {User, Habit, Milestone, Progress, sequelize};
