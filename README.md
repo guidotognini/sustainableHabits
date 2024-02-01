@@ -13,14 +13,12 @@ O principal objetivo do **Desafio Sustentável** é incentivar as pessoas a adot
 ## Funcionalidades
 
 - Cadastro de usuários e definição de desafios pessoais.
-- Acompanhamento do progresso individual e coletivo.
+- Acompanhamento do progresso individual.
 - Recursos de incentivo e motivação para manter o engajamento.
-- Compartilhamento de dicas, experiências e conquistas.
-- Integração com redes sociais para ampliar o alcance e impacto.
 
 ## Próximos Passos
 
-Atualmente, o projeto está focado no desenvolvimento do backend, com planos para expandir e desenvolver o frontend em breve. Com isso, pretendemos oferecer uma experiência completa e integrada aos usuários, facilitando o acesso e a utilização da plataforma.
+Atualmente, o projeto está focado no desenvolvimento do backend, com planos para expandir e desenvolver o frontend em breve. Com isso, pretendo oferecer uma experiência completa e integrada aos usuários, facilitando o acesso e a utilização da plataforma.
 
 ## Contribuições
 
