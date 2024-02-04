@@ -20,8 +20,6 @@
 - AsyncHandler
 
 
-
-
 ## Aprendizados
 
 ### Técnicos
@@ -31,6 +29,7 @@
 - Utilização de ORM para simplificação de consultas e ações no banco de dados
 - Encriptografia
 - Manipulação de erros
+- Deploy
 
 ### Habilidades
 - Resiliência na busca de soluções
@@ -40,6 +39,111 @@
 ## Próximos Passos
 
 Atualmente, o projeto está focado no desenvolvimento do backend, com planos para expandir e desenvolver o frontend. Com isso, pretendo oferecer uma experiência completa e integrada aos usuários, facilitando o acesso e a utilização da plataforma.
+
+## Fazendo Requisições HTTP para a API
+
+### Habit Routes
+
+1. **Obter todos os hábitos**
+   - **Método**: `GET`
+   - **Endpoint**: `/`
+
+2. **Obter um hábito específico**
+   - **Método**: `GET`
+   - **Endpoint**: `/:id`
+
+3. **Obter o progresso de todos os hábitos**
+   - **Método**: `GET`
+   - **Endpoint**: `/progress`
+
+4. **Obter o progresso de um hábito específico**
+   - **Método**: `GET`
+   - **Endpoint**: `/:id/progress`
+
+5. **Adotar um hábito**
+   - **Método**: `GET`
+   - **Endpoint**: `/:id`
+
+6. **Abandonar um hábito**
+   - **Método**: `DELETE`
+   - **Endpoint**: `/:id`
+
+7. **Atualizar um marco de um hábito**
+   - **Método**: `PUT`
+   - **Endpoint**: `/:id/:milestone`
+
+8. **Comentar sobre um hábito**
+   - **Método**: `POST`
+   - **Endpoint**: `/:id/comment`
+   - **Corpo da Requisição**:
+     ```json
+     {
+       "comment": "<comment>"
+     }
+     ```
+
+9. **Editar um comentário sobre um hábito**
+   - **Método**: `PUT`
+   - **Endpoint**: `/:id/comment/:commentId`
+   - **Corpo da Requisição**:
+     ```json
+     {
+       "comment": "<comment>"
+     }
+     ```
+
+10. **Excluir um comentário sobre um hábito**
+    - **Método**: `DELETE`
+    - **Endpoint**: `/:id/comment/:commentId`
+
+11. **Mostrar todos os comentários sobre um hábito**
+    - **Método**: `GET`
+    - **Endpoint**: `/:id/comment`
+
+### User Routes
+
+12. **Registrar um novo usuário**
+    - **Método**: `POST`
+    - **Endpoint**: `/register`
+    - **Corpo da Requisição**:
+      ```json
+      {
+        "username": "<username>",
+        "email": "<email>",
+        "password": "<password>"
+      }
+      ```
+
+13. **Fazer login**
+    - **Método**: `POST`
+    - **Endpoint**: `/login`
+    - **Corpo da Requisição**:
+      ```json
+      {
+        "username": "<username>",
+        "password": "<password>"
+      }
+      ```
+
+14. **Fazer logout**
+    - **Método**: `POST`
+    - **Endpoint**: `/logout`
+
+15. **Obter perfil do usuário**
+    - **Método**: `GET`
+    - **Endpoint**: `/profile`
+
+16. **Atualizar perfil do usuário**
+    - **Método**: `PUT`
+    - **Endpoint**: `/profile`
+    - **Corpo da Requisição**:
+      ```json
+      {
+        "username": "<username>",
+        "email": "<email>"
+      }
+      ```
+
 
 
 ## Contribuições
