@@ -3,8 +3,9 @@ const {Sequelize, DataTypes} = require('sequelize');
 const pgUsername = process.env.PG_USERNAME;
 const pgPassword = process.env.PG_PASSWORD;
 const dbName = process.env.DB_NAME;
+const hostName = process.env.HOST_NAME;
 
-const sequelize = new Sequelize (`postgres://${pgUsername}:${pgPassword}@localhost:5432/${dbName}`);
+const sequelize = new Sequelize (`postgres://${pgUsername}:${pgPassword}@${hostName}/${dbName}`);
 
 const User = sequelize.define('User', {
   id: {
