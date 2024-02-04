@@ -42,6 +42,16 @@ Atualmente, o projeto está focado no desenvolvimento do backend, com planos par
 
 ## Fazendo Requisições HTTP para a API
 
+Para fazer requisições para a API, utilize o seguinte URL base: `https://sustainablehabits.onrender.com/`
+
+### Sugestões de Aplicativos para Fazer Requisições:
+
+- **Postman**: Um aplicativo de desenvolvimento colaborativo para fazer requisições HTTP.
+  [Postman Website](https://www.postman.com/)
+
+- **ReqBin**: Um site onde você pode fazer requisições HTTP online diretamente do seu navegador.
+  [ReqBin Website](https://reqbin.com/)
+
 ### Habit Routes
 
 1. **Obter todos os hábitos**
