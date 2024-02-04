@@ -34,7 +34,7 @@
 ### Habilidades
 - Resiliência na busca de soluções
 - Paciência para debugar e entender o passo a passo para encontrar o problema
-- Definir as funcionalidades que desejo no início do projeto para ganhar eficiência
+- Definir as funcionalidades que desejo desde o início do projeto para ganhar eficiência
 
 ## Próximos Passos
 
@@ -42,119 +42,37 @@ Atualmente, o projeto está focado no desenvolvimento do backend, com planos par
 
 ## Fazendo Requisições HTTP para a API
 
+Utilize a coleção que preparei com todas as requisições para testar a API
+
+[<img src="https://run.pstmn.io/button.svg" alt="Run In Postman" style="width: 128px; height: 32px;">](https://god.gw.postman.com/run-collection/29144337-fe203eb9-9c0b-4130-9c3c-868f64673126?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D29144337-fe203eb9-9c0b-4130-9c3c-868f64673126%26entityType%3Dcollection%26workspaceId%3Dbd44a99e-94d6-477f-b0e3-25653fbccb2e)
+
+ou
+
 Para fazer requisições para a API, utilize o seguinte URL base: `https://sustainablehabits.onrender.com/`
 
-### Sugestões de Aplicativos para Fazer Requisições:
+com as rotas abaixo
 
-- **Postman**: Um aplicativo de desenvolvimento colaborativo para fazer requisições HTTP.
-  [Postman Website](https://www.postman.com/)
+### User Routes ('/users')
 
-- **ReqBin**: Um site onde você pode fazer requisições HTTP online diretamente do seu navegador.
-  [ReqBin Website](https://reqbin.com/)
+- **POST** `/register`: Registrar um novo usuário
+- **POST** `/login`: Fazer login
+- **POST** `/logout`: Fazer logout
+- **GET** `/profile`: Obter perfil do usuário
+- **PUT** `/profile`: Atualizar perfil do usuário
 
-### Habit Routes
+### Habit Routes ('/habits')
 
-1. **Obter todos os hábitos**
-   - **Método**: `GET`
-   - **Endpoint**: `/`
-
-2. **Obter um hábito específico**
-   - **Método**: `GET`
-   - **Endpoint**: `/:id`
-
-3. **Obter o progresso de todos os hábitos**
-   - **Método**: `GET`
-   - **Endpoint**: `/progress`
-
-4. **Obter o progresso de um hábito específico**
-   - **Método**: `GET`
-   - **Endpoint**: `/:id/progress`
-
-5. **Adotar um hábito**
-   - **Método**: `GET`
-   - **Endpoint**: `/:id`
-
-6. **Abandonar um hábito**
-   - **Método**: `DELETE`
-   - **Endpoint**: `/:id`
-
-7. **Atualizar um marco de um hábito**
-   - **Método**: `PUT`
-   - **Endpoint**: `/:id/:milestone`
-
-8. **Comentar sobre um hábito**
-   - **Método**: `POST`
-   - **Endpoint**: `/:id/comment`
-   - **Corpo da Requisição**:
-     ```json
-     {
-       "comment": "<comment>"
-     }
-     ```
-
-9. **Editar um comentário sobre um hábito**
-   - **Método**: `PUT`
-   - **Endpoint**: `/:id/comment/:commentId`
-   - **Corpo da Requisição**:
-     ```json
-     {
-       "comment": "<comment>"
-     }
-     ```
-
-10. **Excluir um comentário sobre um hábito**
-    - **Método**: `DELETE`
-    - **Endpoint**: `/:id/comment/:commentId`
-
-11. **Mostrar todos os comentários sobre um hábito**
-    - **Método**: `GET`
-    - **Endpoint**: `/:id/comment`
-
-### User Routes
-
-12. **Registrar um novo usuário**
-    - **Método**: `POST`
-    - **Endpoint**: `/register`
-    - **Corpo da Requisição**:
-      ```json
-      {
-        "username": "<username>",
-        "email": "<email>",
-        "password": "<password>"
-      }
-      ```
-
-13. **Fazer login**
-    - **Método**: `POST`
-    - **Endpoint**: `/login`
-    - **Corpo da Requisição**:
-      ```json
-      {
-        "username": "<username>",
-        "password": "<password>"
-      }
-      ```
-
-14. **Fazer logout**
-    - **Método**: `POST`
-    - **Endpoint**: `/logout`
-
-15. **Obter perfil do usuário**
-    - **Método**: `GET`
-    - **Endpoint**: `/profile`
-
-16. **Atualizar perfil do usuário**
-    - **Método**: `PUT`
-    - **Endpoint**: `/profile`
-    - **Corpo da Requisição**:
-      ```json
-      {
-        "username": "<username>",
-        "email": "<email>"
-      }
-      ```
-
-
+- **GET** `/`: Obter todos os hábitos
+- **GET** `/:id`: Obter um hábito específico
+- **GET** `/progress`: Obter o progresso de todos os hábitos
+- **GET** `/:id/progress`: Obter o progresso de um hábito específico
+- **POST** `/:id`: Adotar um hábito
+- **DELETE** `/:id`: Abandonar um hábito
+- **PUT** `/:id/:milestone`: Atualizar um marco de um hábito
+- **POST** `/:id/comment`: Comentar sobre um hábito
+- **PUT** `/:id/comment/:commentId`: Editar um comentário sobre um hábito
+- **DELETE** `/:id/comment/:commentId`: Excluir um comentário sobre um hábito
+- **GET** `/:id/comment`: Mostrar todos os comentários sobre um hábito
 
 ## Contribuições
 
