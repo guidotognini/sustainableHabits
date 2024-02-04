@@ -9,7 +9,7 @@ router.post('/register', register); // Route for user registration, handled by t
 router.post('/login', login); // Route for user login, handled by the login controller function
 router.delete('/logout', logout); // Route for user login, handled by the login controller function
 router.route('/profile')
-  .get(validateToken, profile) // Route to retrieve information about the current user, requires token validation before execution, handled by the currentUser controller function
+  .get(validateToken, profile) // Route to retrieve information about the current user, requires token validation before execution, handled by the profile controller function
   .put(validateToken, updateProfile) 
 
 module.exports = router; // Exporting the router for use in other parts of the application

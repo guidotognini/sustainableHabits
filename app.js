@@ -1,8 +1,8 @@
 // Importing necessary modules
-const express = require("express"); // Importing Express.js framework
+const express = require('express'); // Importing Express.js framework
 const cookieParser = require('cookie-parser'); // Importing cookie-parser middleware
 const app = express(); // Creating an Express application instance
-require("dotenv").config(); // Loading environment variables from a .env file
+require('dotenv').config(); // Loading environment variables from a .env file
 const port = process.env.PORT || 3000; // Setting the port for the server to listen on
 const errorHandler = require('./middleware/errorHandler'); // Importing custom error handling middleware
 
