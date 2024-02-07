@@ -50,8 +50,14 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { username, password } = req.body; // Extracting username and password from request body
 
+  // Validating input fields
+  if (!username || !password) {
+    res.status(400);
+    throw new Error("All fields are mandatory");
+  }
+
   // Finding user by username in the database
-  const user = await User.findOne({ where: { username: username } });
+  const user = await User.findOne({ where: { [Op.or]: [{username: username}, {email: username}] } });
   if (!user) {
     // If user not found, return error response
     res.status(404);
@@ -95,14 +101,37 @@ const profile = asyncHandler(async (req, res) => {
 });
 
 // Controller function to update user profile
-const updateProfile = async (req, res) => {
+const updateProfile = asyncHandler(async (req, res) => {
   const { username, email } = req.body;
+
+  // Validating input fields
+  if (!username && !email) {
+    res.status(400);
+    throw new Error("Please fill up at least one of of the fields to make changes");
+  } else if(!validator.isEmail(email)) {
+    res.status(400);
+    throw new Error("Please use a valid email address");
+  }
+
   const user = await User.findByPk(req.userId);
 
+  let existingUser;
+
   // Checking if username or email already exists in the database
-  const existingUser = await User.findOne({
-    where: { [Op.or]: [{ username: username }, { email: email }] },
-  });
+  if(username && email) {
+    existingUser = await User.findOne({
+      where: { [Op.or]: [{ username: username }, { email: email }] },
+    });
+  } else if(username) {
+    existingUser = await User.findOne({
+      where: { username: username }
+    });
+  } else {
+    existingUser = await User.findOne({
+      where: { email: email }
+    });
+  };
+
   if (existingUser) {
     res.status(400);
     throw new Error("Username or email already in use");
@@ -126,7 +155,7 @@ const updateProfile = async (req, res) => {
       message: "User updated successfully",
       "User info": { username: user.username, email: user.email },
     });
-};
+})
 
 // Exporting controller functions for use in other parts of the application
 module.exports = { register, login, logout, profile, updateProfile };

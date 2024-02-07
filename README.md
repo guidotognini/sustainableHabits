@@ -64,15 +64,16 @@ com as rotas abaixo
 
 - **GET** `/`: Obter todos os hábitos
 - **GET** `/:id`: Obter um hábito específico
+- **POST** `/:id`: Adotar um hábito
 - **GET** `/progress`: Obter o progresso de todos os hábitos
 - **GET** `/:id/progress`: Obter o progresso de um hábito específico
-- **POST** `/:id`: Adotar um hábito
-- **DELETE** `/:id`: Abandonar um hábito
 - **PUT** `/:id/:milestone`: Atualizar um marco de um hábito
+- **DELETE** `/:id`: Abandonar um hábito
+- **GET** `/:id/comment`: Mostrar todos os comentários sobre um hábito
 - **POST** `/:id/comment`: Comentar sobre um hábito
 - **PUT** `/:id/comment/:commentId`: Editar um comentário sobre um hábito
 - **DELETE** `/:id/comment/:commentId`: Excluir um comentário sobre um hábito
-- **GET** `/:id/comment`: Mostrar todos os comentários sobre um hábito
+
 
 ## Contribuições
 
