@@ -6,3 +6,7 @@ node_modules
 
 # Ignore files with a specific extension
 *.log
+
+*.http
+
+SustainableHabits (Render).postman_collection.json

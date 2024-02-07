@@ -198,6 +198,11 @@ const getHabitProgress = asyncHandler(async (req, res) => {
       },
     ],
   });
+  if(habitProgress.length === 0) {
+    res.status(400)
+      throw new Error(`You have not adopted yet the habit with id ${req.params.id}. Use GET method at /habits/progress to see ids of habits already adopted`)
+
+  }
 
   // Extract progress status for each milestone
   const milestonesStatus = habitProgress[0].Progresses;
