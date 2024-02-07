@@ -73,10 +73,10 @@ const getOneHabit = asyncHandler(async (req, res) => {
 
 // Controller function to adopt a habit
 const adoptHabit = asyncHandler(async (req, res) => {
-  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: req.params.id}});
+  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: Number(req.params.id)}});
   if(alreadyAdopted) {
     res.status(400)
-      throw new Error('Habit already adopted. Please choose another one to make the world a better place')
+      throw new Error('Habit already adopted. Please choose another one to make the world a even better place')
   }
   // Find user and habit by IDs
   const user = await User.findByPk(req.userId);
