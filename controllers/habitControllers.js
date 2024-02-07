@@ -1,5 +1,6 @@
 // Importing necessary modules and models
 const asyncHandler = require("express-async-handler"); // Middleware for handling asynchronous errors
+const {availableOptions} = require('../helperFunctions.js')
 const {
   Habit,
   User,
@@ -15,22 +16,24 @@ const getHabits = asyncHandler(async (req, res) => {
     const habitsProgress = await Progress.findAll({
       raw: true,
       where: { user_id: req.userId },
-      attributes: ['habit_id', 'completed'],
-      include: [{
-        model: Milestone,
-        raw: true,
-        attributes: ['description'],
-        required: true
-      }]
+      attributes: ["habit_id", "completed"],
+      include: [
+        {
+          model: Milestone,
+          raw: true,
+          attributes: ["description"],
+          required: true,
+        },
+      ],
     });
-    
-    if(habitsProgress.length === 0) {
-      res.status(200).send('You have not adopted any habits yet')
+
+    if (habitsProgress.length === 0) {
+      res.status(200).send("You have not adopted any habits yet");
     }
     // Initialize arrays to store unique habit IDs and corresponding habit information
     const habitIds = [];
     const habitsInfo = [];
-    
+
     // Loop through each progress entry to collect unique habit IDs and fetch corresponding habit information
     for (let i = 0; i < habitsProgress.length; i++) {
       let habitId = habitsProgress[i].habit_id;
@@ -38,30 +41,36 @@ const getHabits = asyncHandler(async (req, res) => {
         habitIds.push(habitId);
         const habit = await Habit.findByPk(habitId, { raw: true });
         // Calculate progress based on completed milestones
-        const milestones = habitsProgress.filter(milestone => milestone.habit_id === habitId);
-        const completedMilestones = milestones.filter(milestone => milestone.completed === true);
-        const progressPercentage = (completedMilestones.length / milestones.length) * 100;
+        const milestones = habitsProgress.filter(
+          (milestone) => milestone.habit_id === habitId
+        );
+        const completedMilestones = milestones.filter(
+          (milestone) => milestone.completed === true
+        );
+        const progressPercentage =
+          (completedMilestones.length / milestones.length) * 100;
         // Add progress property to the habit object
         habit.progressPercentage = progressPercentage;
         habitsInfo.push(habit);
       }
     }
-    
+
     // Assign milestones to each habit in the habitsInfo array
-    habitsInfo.forEach(habit => {
-      habit.Milestones = habitsProgress.filter(milestone => milestone.habit_id === habit.id);
+    habitsInfo.forEach((habit) => {
+      habit.Milestones = habitsProgress.filter(
+        (milestone) => milestone.habit_id === habit.id
+      );
     });
-    
+
     // Send user-specific habits with progress as response
     res.status(200).json(habitsInfo);
   } else {
     // If not authenticated, retrieve all habits
     const habits = await Habit.findAll();
     // Send all habits as response
-    res.status(200).json({ "Habits": habits });
+    res.status(200).json({ Habits: habits });
   }
 });
-
 
 // Controller function to get a single habit
 const getOneHabit = asyncHandler(async (req, res) => {
@@ -73,10 +82,14 @@ const getOneHabit = asyncHandler(async (req, res) => {
 
 // Controller function to adopt a habit
 const adoptHabit = asyncHandler(async (req, res) => {
-  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: Number(req.params.id)}});
-  if(alreadyAdopted) {
-    res.status(400)
-      throw new Error('Habit already adopted. Please choose another one to make the world a even better place')
+  const alreadyAdopted = await Progress.findOne({
+    where: { user_id: req.userId, habit_id: Number(req.params.id) },
+  });
+  if (alreadyAdopted) {
+    res.status(400);
+    throw new Error(
+      "Habit already adopted. Please choose another one to make the world a even better place"
+    );
   }
   // Find user and habit by IDs
   const user = await User.findByPk(req.userId);
@@ -108,10 +121,12 @@ const adoptHabit = asyncHandler(async (req, res) => {
 
 // Controller function to drop a habit
 const dropHabit = asyncHandler(async (req, res) => {
-  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: Number(req.params.id)}});
-  if(!alreadyAdopted) {
-    res.status(400)
-      throw new Error('Please choose a habit that was already adopted to drop')
+  const alreadyAdopted = await Progress.findOne({
+    where: { user_id: req.userId, habit_id: Number(req.params.id) },
+  });
+  if (!alreadyAdopted) {
+    res.status(400);
+    throw new Error("Please choose a habit that was already adopted to drop");
   }
   // Delete progress records associated with the habit
   await Progress.destroy({
@@ -126,44 +141,32 @@ const dropHabit = asyncHandler(async (req, res) => {
 
 // Controller function to update milestone status
 const updateMilestone = asyncHandler(async (req, res) => {
-  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: Number(req.params.id)}});
-  if(!alreadyAdopted) {
-    res.status(400)
-      throw new Error('Please choose a habit that was already adopted to update milestones')
+  let habitId = Number(req.params.id), userId = req.userId, milestoneId = Number(req.params.milestone);
+  const alreadyAdopted = await Progress.findOne({
+    where: { user_id: userId, habit_id: habitId },
+  });
+  if (!alreadyAdopted) {
+    res.status(400);
+    throw new Error(
+"Please select a habit that has already been adopted to update milestones. You can verify available habits using the GET /habits/progress route."
+    );
   }
   // Find milestone by user ID, habit ID, and milestone ID
   const milestone = await Progress.findOne({
     where: {
-      user_id: req.userId,
-      habit_id: Number(req.params.id),
-      milestone_id: Number(req.params.milestone),
+      user_id: userId,
+      habit_id: habitId,
+      milestone_id: milestoneId
     },
   });
-  
-  if(!milestone) {
-    const possibleMilestones = await Milestone.findAll({
-      where: { habit_id: req.params.id }, raw: true, attributes: {exclude: ['habit_id']},
-      include: [
-        {
-          model: Progress,
-          where: { user_id: req.userId },
-          attributes: ["completed"],
-          required: true,
-          raw: true
-        },
-      ],
-    });
 
-    const milestoneOptions = possibleMilestones.map(
-      (milestone) =>
-        `${milestone.id}: ${
-          milestone.description
-        } - ${milestone['Progresses.completed'] ? 'complete' : 'incomplete'}`
-    );
-
-    // Format milestoneOptions as a string with each element on a new line
-    const formattedMilestones = milestoneOptions.join('\n');
-    return res.status(400).send(`Please specify a milestone ID from the options below in the last URL parameter to update:\n\n${formattedMilestones}`)
+  if (!milestone) {
+    const milestonesMessage = await availableOptions(habitId,userId,true)
+    return res
+      .status(400)
+      .send(
+        `Please specify a milestone ID from the options below in the last URL parameter to update:\n\n${milestonesMessage}`
+      );
   }
   // Toggle milestone completion status
   milestone.completed = !milestone.completed;
@@ -171,7 +174,7 @@ const updateMilestone = asyncHandler(async (req, res) => {
   await milestone.save({ fields: ["completed"] });
   // Send success message with updated milestone status as response
   res.status(200).send(`Milestone status is now ${milestone.completed}`);
-});
+})
 
 // Controller function to get habit progress
 const getHabitProgress = asyncHandler(async (req, res) => {
@@ -210,19 +213,17 @@ const getHabitProgress = asyncHandler(async (req, res) => {
   }
 
   // Send habit progress as response
-  res
-    .status(200)
-    .json({
-      milestones: milestonesStatus,
-      "Habit progress": `${progressPercentage}%`,
-    });
+  res.status(200).json(milestonesStatus/* {
+    milestones: milestonesStatus,
+    "Habit progress": `${progressPercentage}%`,
+  } */);
 });
 
 // Controller function to add a comment to a habit
 const commentHabit = asyncHandler(async (req, res) => {
-  if(!req.body.comment) {
-    res.status(400)
-      throw new Error('Provide content in the request body comment property')
+  if (!req.body.comment) {
+    res.status(400);
+    throw new Error("Provide content in the request body comment property");
   }
   // Create a new comment
   const comment = await Comment.create({
@@ -238,15 +239,23 @@ const commentHabit = asyncHandler(async (req, res) => {
 
 // Controller function to edit a comment
 const editComment = asyncHandler(async (req, res) => {
+  if (!req.body.comment) {
+    res.status(400);
+    throw new Error("Provide content in the request body comment property");
+  }
   // Find comment by ID
   const comment = await Comment.findOne({
     where: { id: Number(req.params.commentId), user_id: req.userId },
   });
-  if(!comment){
-    const habitComments  = await Comment.findAll({where: { habit_id: Number(req.params.id), user_id: req.userId}, raw: true})
-    const updateOptions = habitComments.map((comment) => `id: ${comment.id}. Content: ${comment.content}`);
-    const formattedComments = updateOptions.join('\n')
-    return res.status(400).send(`Please specify a comment ID from the options below in the last URL parameter to update: \n${formattedComments}`)
+  if (!comment) {
+        // Send error message if comment not found
+        const commentsMessage = await availableOptions(
+          Number(req.params.id),
+          req.userId
+        );
+        return res.status(400).send(
+          `Please specify a comment ID from the options below in the last URL parameter to update: \n${commentsMessage}`
+        );
   }
   // Update comment content
   comment.content = req.body.comment;
@@ -261,11 +270,15 @@ const deleteComment = asyncHandler(async (req, res) => {
   const comment = await Comment.findOne({
     where: { id: Number(req.params.commentId), user_id: req.userId },
   });
-  if(!comment){
-    const habitComments  = await Comment.findAll({where: { habit_id: Number(req.params.id), user_id: req.userId}, raw: true})
-    const deleteOptions = habitComments.map((comment) => `id: ${comment.id}. Content: ${comment.content}`);
-    const formattedComments = deleteOptions.join('\n')
-    return res.status(400).send(`Please specify a comment ID from the options below in the last URL parameter to delete: \n${formattedComments}`)
+  if (!comment) {
+    // Send error message if comment not found
+    const commentsMessage = await availableOptions(
+      Number(req.params.id),
+      req.userId
+    );
+    return res.status(400).send(
+      `Please specify a comment ID from the options below in the last URL parameter to delete: \n${commentsMessage}`
+    );
   }
   // Delete comment by ID
   await Comment.destroy({
