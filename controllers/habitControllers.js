@@ -66,7 +66,7 @@ const getHabits = asyncHandler(async (req, res) => {
 // Controller function to get a single habit
 const getOneHabit = asyncHandler(async (req, res) => {
   // Find habit by ID
-  const habit = await Habit.findOne({ where: { id: req.params.id } });
+  const habit = await Habit.findOne({ where: { id: Number(req.params.id) } });
   // Send habit as response
   res.status(200).json(habit);
 });
@@ -108,7 +108,7 @@ const adoptHabit = asyncHandler(async (req, res) => {
 
 // Controller function to drop a habit
 const dropHabit = asyncHandler(async (req, res) => {
-  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: req.params.id}});
+  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: Number(req.params.id)}});
   if(!alreadyAdopted) {
     res.status(400)
       throw new Error('Please choose a habit that was already adopted to drop')
@@ -126,7 +126,7 @@ const dropHabit = asyncHandler(async (req, res) => {
 
 // Controller function to update milestone status
 const updateMilestone = asyncHandler(async (req, res) => {
-  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: req.params.id}});
+  const alreadyAdopted = await Progress.findOne({where: {user_id: req.userId, habit_id: Number(req.params.id)}});
   if(!alreadyAdopted) {
     res.status(400)
       throw new Error('Please choose a habit that was already adopted to update milestones')
@@ -243,7 +243,7 @@ const editComment = asyncHandler(async (req, res) => {
     where: { id: Number(req.params.commentId), user_id: req.userId },
   });
   if(!comment){
-    const habitComments  = await Comment.findAll({where: { habit_id: req.params.id, user_id: req.userId}, raw: true})
+    const habitComments  = await Comment.findAll({where: { habit_id: Number(req.params.id), user_id: req.userId}, raw: true})
     const updateOptions = habitComments.map((comment) => `id: ${comment.id}. Content: ${comment.content}`);
     const formattedComments = updateOptions.join('\n')
     return res.status(400).send(`Please specify a comment ID from the options below in the last URL parameter to update: \n${formattedComments}`)
@@ -262,7 +262,7 @@ const deleteComment = asyncHandler(async (req, res) => {
     where: { id: Number(req.params.commentId), user_id: req.userId },
   });
   if(!comment){
-    const habitComments  = await Comment.findAll({where: { habit_id: req.params.id, user_id: req.userId}, raw: true})
+    const habitComments  = await Comment.findAll({where: { habit_id: Number(req.params.id), user_id: req.userId}, raw: true})
     const deleteOptions = habitComments.map((comment) => `id: ${comment.id}. Content: ${comment.content}`);
     const formattedComments = deleteOptions.join('\n')
     return res.status(400).send(`Please specify a comment ID from the options below in the last URL parameter to delete: \n${formattedComments}`)

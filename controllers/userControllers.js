@@ -155,7 +155,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       message: "User updated successfully",
       "User info": { username: user.username, email: user.email },
     });
-})
+});
 
 // Exporting controller functions for use in other parts of the application
 module.exports = { register, login, logout, profile, updateProfile };
